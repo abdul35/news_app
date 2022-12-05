@@ -1,45 +1,32 @@
 import React from "react";
-import {
-	BrowserRouter as Router,
-	Switch,
-	Route,
-	Link
-  } from "react-router-dom";
 import "./App.css";
-import About from './pages/About';
-import Home from './pages/Home';
 
-function App() {
+import { Switch, Route } from "react-router-dom";
+import About from "./pages/About";
+import Home from "./pages/Home";
+import { Container } from "@mui/material";
+import { Provider } from "react-redux";
+import { store } from "./store";
+
+const App = (): React.ReactElement => {
+	store.subscribe(() => console.log(store.getState()));
 	return (
-		<Router>
+		<Provider store={store}>
 			<div className="App">
-				<header className="App-header">
-					<h1>What's up Duuude</h1>
-					<nav>
-						<ul>
-							<li>
-								{/* <Link to="/">Home</Link> */}
-								<a href="/">h</a>
-							</li>
-							<li>
-								<a href="/about">a</a>
-								{/* <Link to="/about">About</Link> */}
-							</li>
-						</ul>
-					</nav>
+				<header>
+					<Container>
+						<h1>Hacker news app</h1>
+					</Container>
 				</header>
-				<Switch>
-					<Route path="/about" exact>
-						<About />
-					</Route>
-					<Route path="/" exact>
-						<Home />
-					</Route>
-				</Switch>
+				<Container>
+					<Switch>
+						<Route path={"/about/:id"} component={About} />
+						<Route path="/" exact component={Home} />
+					</Switch>
+				</Container>
 			</div>
-		</Router>
+		</Provider>
 	);
-	
-}
+};
 
 export default App;
