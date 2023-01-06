@@ -13,16 +13,31 @@ const getIdListTopStroies = async () => {
         throw e;
     }
 }
-// https://hacker-news.firebaseio.com/v0/item/8863.json?print=pretty
-const getStory = async (id: number) => {
-    // console.log(id);
 
+const getStory = async (id: number) => {
     try {
         const data = await fetch(`${baseUrl + storyUrlName + id}.json/`);
-        return data.json();
+        return await data.json();
     } catch (e) {
         throw e;
     }
 }
 
-export { getIdListTopStroies, getStory }
+
+const getTopStories = async () => {
+    const listId = await getIdListTopStroies();
+    const slicedListId = listId.slice(0, 100);
+
+    let rawData = [];
+
+    for await (const story of slicedListId.map((e: number) => getStory(e))) {
+        rawData.push(story);
+    }
+    rawData.sort(function (a: any, b: any) {
+        return b.time - a.time;
+    });
+    return rawData;
+};
+
+
+export { getIdListTopStroies, getStory, getTopStories }

@@ -1,29 +1,21 @@
 import { Link } from "react-router-dom";
-import { CardHeader } from "@mui/material";
-import { blueGrey } from "@mui/material/colors";
+import { Container } from "@mui/material";
+import "../styles/Header.css";
 
 const Header = () => {
 	return (
 		<>
-			<CardHeader component={h} classes={blueGrey[300]} color="blue"></CardHeader>
+			<header className="header">
+				<Container>
+					<div className="title-wrap">
+						<Link to={"/"}>
+							<h1 className="title">Geek_news</h1>
+						</Link>
+					</div>
+				</Container>
+			</header>
 		</>
 	);
 };
 
-function h() {
-	return (
-		<>
-			<nav>
-				<ul>
-					<li>
-						<Link to="/about">About</Link>
-					</li>
-					<li>
-						<Link to="/">Home</Link>
-					</li>
-				</ul>
-			</nav>
-		</>
-	);
-}
 export default Header;

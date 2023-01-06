@@ -1,0 +1,23 @@
+.header {
+	margin: 0 0 2rem;
+	background-color: black;
+}
+
+a {
+	font-family: sans-serif;
+	text-decoration: none;
+}
+
+.title {
+	margin-bottom: 0;
+	font-size: 1.5rem;
+	text-align: start;
+	padding: 1rem 0;
+	color: #66ff66;
+	display: inline-block;
+}
+
+.title-wrap {
+	display: flex;
+	justify-content: start;
+}

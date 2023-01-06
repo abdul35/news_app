@@ -1,0 +1,42 @@
+.about {
+	width: 600px;
+	margin: auto;
+}
+
+.date-wrap {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	color: rgba(0, 0, 0, 0.5);
+}
+
+.news-link {
+	text-align: left;
+	font-family: Verdana, Geneva, Tahoma, sans-serif;
+	padding-left: 0;
+}
+
+.news-title {
+	margin-top: 4rem;
+	display: inline-block;
+	font-size: 34px;
+	word-wrap: break-word;
+	color: black;
+}
+
+.comments-container-header {
+	display: flex;
+	justify-content: space-between;
+	margin: 4rem 0 3rem;
+}
+
+.comments-container-header__title {
+	font-size: 1.3rem;
+	font-weight: 700;
+	margin-right: 10px;
+}
+
+.comments-container-header__count {
+	font-size: 1.1rem;
+	color: rgba(0, 0, 0, 0.5);
+}

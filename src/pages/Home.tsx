@@ -1,63 +1,66 @@
-// import {
-// 	Button,
-// 	Card,
-// 	CardActions,
-// 	CardContent,
-// 	CardMedia,
-// 	Divider,
-// 	List,
-// 	ListItem,
-// 	ListItemText,
-// 	Typography,
-// } from "@mui/material";
-// import Link from "@mui/material/Link";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+
+import { LoadingButton } from "@mui/lab";
+import RefreshIcon from "@mui/icons-material/Refresh";
+
+import { getTopStories } from "../services/getStories";
+
 import NewsItem from "../components/NewsItem";
-import { getIdListTopStroies, getStory } from "../services/getStories";
+
+import { reduxActionLoadStories } from "../store/storyActions";
 import { store } from "../store";
 
 const Home = () => {
 	const [stories, setStories] = useState<any>([]);
+	const [loading, setLoading] = useState(true);
 
-	const reduxAction = (data: any) => ({
-		type: "ADD",
-		payload: data,
-	});
+	const dataFromStore = useSelector((state: any) => state.stories);
 
-	const reduxActionGet = (id: number) => ({
-		type: "GET",
-		payload: id,
-	});
+	const refreshStories = async () => {
+		setLoading(true);
+		getTopStories().then(res => {
+			store.dispatch(reduxActionLoadStories(res));
+			setLoading(false);
+			setStories(res);
+		});
+	};
 
 	useEffect(() => {
-		const getListId = async () => {
-			const listIds = await getIdListTopStroies();
-			return listIds.slice(0, 100);
-		};
-
-		const getListStories = async () => {
-			const listId = await getListId();
-			let rawData = [];
-
-			for await (const story of listId.map((e: any) => getStory(e))) {
-				rawData.push(story);
-			}
-			rawData.sort(function (a: any, b: any) {
-				return b.time - a.time;
+		setLoading(false);
+		if (!dataFromStore || !dataFromStore.length) {
+			getTopStories().then(res => {
+				store.dispatch(reduxActionLoadStories(res));
+				setLoading(false);
+				setStories(res);
 			});
-			store.dispatch(reduxAction(rawData));
-			// store.dispatch(reduxActionGet(33827787));
+			return;
+		}
 
-			setStories(rawData);
-		};
-
-		// const storedData = useSelector()
-
-		getListStories();
+		setStories(dataFromStore);
 	}, []);
 
-	return <>{stories.length ? stories.map((story: any) => <NewsItem key={story.id} story={story} />) : null}</>;
+	return (
+		<>
+			<div className="refresh-btn-block">
+				<LoadingButton
+					variant="contained"
+					onClick={refreshStories}
+					loading={loading}
+					sx={{ marginBottom: "1rem" }}
+					disabled={loading}
+				>
+					<RefreshIcon></RefreshIcon>
+				</LoadingButton>
+			</div>
+
+			<main>
+				{stories && stories.length
+					? stories.map((story: any) => <NewsItem key={story.id} story={story} />)
+					: null}
+			</main>
+		</>
+	);
 };
 
 export default Home;
