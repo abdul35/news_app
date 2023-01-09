@@ -1,3 +1,5 @@
+import { StoryType } from "../types/story.type";
+
 const baseUrl = "https://hacker-news.firebaseio.com/v0/";
 
 const topStoriesUrlName = "topstories.json/"
@@ -33,7 +35,7 @@ const getTopStories = async () => {
     for await (const story of slicedListId.map((e: number) => getStory(e))) {
         rawData.push(story);
     }
-    rawData.sort(function (a: any, b: any) {
+    rawData.sort(function (a: StoryType, b: StoryType) {
         return b.time - a.time;
     });
     return rawData;

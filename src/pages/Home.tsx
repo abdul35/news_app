@@ -10,12 +10,13 @@ import NewsItem from "../components/NewsItem";
 
 import { reduxActionLoadStories } from "../store/storyActions";
 import { store } from "../store";
+import { StoryType } from "../types/story.type";
 
 const Home = () => {
-	const [stories, setStories] = useState<any>([]);
-	const [loading, setLoading] = useState(true);
+	const [stories, setStories] = useState<StoryType[]>([]);
+	const [loading, setLoading] = useState<boolean>(true);
 
-	const dataFromStore = useSelector((state: any) => state.stories);
+	const dataFromStore = useSelector((state: { stories: StoryType[] }) => state.stories);
 
 	const refreshStories = async () => {
 		setLoading(true);
@@ -27,17 +28,18 @@ const Home = () => {
 	};
 
 	useEffect(() => {
-		setLoading(false);
 		if (!dataFromStore || !dataFromStore.length) {
+			setLoading(true);
 			getTopStories().then(res => {
 				store.dispatch(reduxActionLoadStories(res));
-				setLoading(false);
 				setStories(res);
+				setLoading(false);
 			});
 			return;
 		}
 
 		setStories(dataFromStore);
+		setLoading(false);
 	}, []);
 
 	return (
@@ -56,7 +58,7 @@ const Home = () => {
 
 			<main>
 				{stories && stories.length
-					? stories.map((story: any) => <NewsItem key={story.id} story={story} />)
+					? stories.map((story: StoryType) => <NewsItem key={story.id} story={story} />)
 					: null}
 			</main>
 		</>

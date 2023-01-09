@@ -1,52 +1,34 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, PropsWithChildren } from "react";
 import { useSelector } from "react-redux";
 import { getStory, getTopStories } from "../services/getStories";
-import { Button } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import { TreeView, TreeItem } from "@mui/lab";
-import { store } from "../store";
+import { LoadingButton, TreeView } from "@mui/lab";
+import { RouteComponentProps } from "react-router";
 
 import "../styles/About.css";
+
+import { store } from "../store";
 import { reduxActionLoadStories, reduxActionUpdateStoryComment } from "../store/storyActions";
 
-const RenderTree = ({ rawComments }: any) => {
-	const [comment, setKid] = useState<any>(rawComments);
+import TreeComments from "../components/TreeComments";
+import { StoryType } from "../types/story.type";
+import { CommentType } from "../types/comment.type";
 
-	if (typeof comment === "number") {
-		getStory(comment).then(el => setKid(el));
-	}
-
-	return comment && comment.by ? (
-		<>
-			<TreeItem
-				key={comment.id}
-				nodeId={comment.id}
-				label={comment.by}
-				expandIcon={<ExpandMore />}
-				collapseIcon={<ExpandLess />}
-				sx={{ padding: ".5rem", margin: ".5rem", backgroundColor: "lightgray" }}
-			>
-				{Array.isArray(comment.kids) &&
-					comment.kids.map((node: any) => {
-						return <RenderTree kids={node} />;
-					})}
-			</TreeItem>
-		</>
-	) : null;
-};
-
-const About = (props: any) => {
+const About = (props: PropsWithChildren<RouteComponentProps<{ id: string }>>) => {
 	const { id } = props.match.params;
-	const [date, setDate] = useState("");
-	let data = useSelector((state: any) => state.stories.find((story: any) => story.id === +id));
+	const [date, setDate] = useState<string>("");
+	let data = useSelector((state: { stories: StoryType[] }) =>
+		state.stories.find((story: StoryType) => story.id === +id),
+	);
 
 	let dateInit;
-	let [comments, setComments] = useState([]);
-	const [totalComments, setTotalComments] = useState();
+	let [comments, setComments] = useState<number[]>([]);
+	const [totalComments, setTotalComments] = useState<number>();
+	const [loading, setLoading] = useState<boolean>(true);
 
-	const initStates = (data: any) => {
-		dateInit = data.time && new Date(data.time * 1000);
+	const initStates = (data: StoryType) => {
+		dateInit = new Date(data.time * 1000);
 		setDate(
 			`${dateInit.getDate()} ${dateInit.toLocaleString("default", {
 				month: "long",
@@ -58,26 +40,27 @@ const About = (props: any) => {
 
 	useEffect(() => {
 		data && initStates(data);
+		setLoading(false);
 
 		if (!data) {
 			getTopStories().then(res => {
 				store.dispatch(reduxActionLoadStories(res));
-				const news = res.find((story: any) => story.id === +id);
-				initStates(news);
-				data = news;
+				res && initStates(res.find((story: StoryType) => story.id === +id));
 			});
 
 			return;
 		}
 	}, []);
 
-	const refreshComments = async () => {
-		const item = await getStory(id);
+	const refreshComments = () => {
+		setLoading(true);
+		getStory(+id).then(story => {
+			setComments(story.kids);
+			setTotalComments(story.descendants);
+			setLoading(false);
 
-		setComments(item.kids);
-		setTotalComments(item.descendants);
-
-		store.dispatch(reduxActionUpdateStoryComment(item));
+			store.dispatch(reduxActionUpdateStoryComment(story));
+		});
 	};
 
 	return (
@@ -105,25 +88,35 @@ const About = (props: any) => {
 				<article className="comments-container">
 					<div className="comments-container-header">
 						{totalComments ? (
-							<div>
-								<span className="comments-container-header__title">Comments</span>
-								<span className="comments-container-header__count">{totalComments}</span>
-							</div>
+							<>
+								<div>
+									<span className="comments-container-header__title">Comments</span>
+									<span className="comments-container-header__count">{totalComments}</span>
+								</div>
+								<div>
+									<LoadingButton
+										onClick={refreshComments}
+										variant="contained"
+										loading={loading}
+										disabled={loading}
+									>
+										<RefreshIcon />
+									</LoadingButton>
+								</div>
+							</>
 						) : null}
-
-						<div>
-							<Button onClick={refreshComments} variant="contained">
-								<RefreshIcon />
-							</Button>
-						</div>
 					</div>
 
 					{comments && comments.length ? (
-						<TreeView aria-label="comments" sx={{ height: 240, flexGrow: 1, maxWidth: 400 }}>
-							{comments &&
-								comments.map((el: any) => {
-									return <RenderTree kids={el} />;
-								})}
+						<TreeView
+							aria-label="comments"
+							sx={{ height: 240, flexGrow: 1, maxWidth: 400 }}
+							defaultExpandIcon={<ExpandMore />}
+							defaultCollapseIcon={<ExpandLess />}
+						>
+							{comments.map((commentId: number) => {
+								return <TreeComments commentId={commentId} key={commentId} />;
+							})}
 						</TreeView>
 					) : null}
 				</article>

@@ -1,23 +1,8 @@
-import { Card, CardContent, Divider, Typography } from "@mui/material";
-import React, { ReactNode } from "react";
-import { useEffect, useState } from "react";
-import { getStory } from "../services/getStories";
+import { Card, CardContent, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
+import { StoryType } from "../types/story.type";
 
-// by: "kiyanwang"
-// descendants:1
-// id:33585932
-// kids:[33587071]
-// score:3
-// time:1668364569
-// title:"Traits You Can Change, and Traits You Can’t"
-// type:"story"
-// url:"https://staysaasy.com/leadership/2022/11/06/traits-you-can-change-and-traits-you-cant.html"
-
-const NewsItem = ({ story }: any) => {
-	// console.log(story);
-	useEffect(() => {}, []);
-
+const NewsItem = ({ story }: { story: StoryType }) => {
 	return (
 		<>
 			{story && (
@@ -61,12 +46,8 @@ const NewsItem = ({ story }: any) => {
 					</CardContent>
 				</Card>
 			)}
-			{/* <Divider /> */}
 		</>
 	);
-	// function displayCorrectTime(): ReactNode {
-	// 	return new Date(story.time * 1000).getDay() as ReactNode;
-	// }
 };
 
 export default NewsItem;

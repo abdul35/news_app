@@ -1,11 +1,13 @@
-const reduxActionLoadStories = (data: any) => ({
+import { StoryType } from "../types/story.type";
+
+const reduxActionLoadStories = (data: Array<StoryType>) => ({
     type: "ADD",
     payload: data,
 });
 
-const reduxActionUpdateStoryComment = (comment: any) => ({
+const reduxActionUpdateStoryComment = (story: StoryType) => ({
     type: "UPDATE",
-    payload: comment,
+    payload: story,
 });
 
 export { reduxActionLoadStories, reduxActionUpdateStoryComment };
