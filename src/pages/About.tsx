@@ -1,4 +1,4 @@
-import { useEffect, useState, PropsWithChildren } from "react";
+import { useEffect, useState, PropsWithChildren, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { getStory, getTopStories } from "../services/getStories";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
@@ -13,7 +13,6 @@ import { reduxActionLoadStories, reduxActionUpdateStoryComment } from "../store/
 
 import TreeComments from "../components/TreeComments";
 import { StoryType } from "../types/story.type";
-import { CommentType } from "../types/comment.type";
 
 const About = (props: PropsWithChildren<RouteComponentProps<{ id: string }>>) => {
 	const { id } = props.match.params;
@@ -27,7 +26,7 @@ const About = (props: PropsWithChildren<RouteComponentProps<{ id: string }>>) =>
 	const [totalComments, setTotalComments] = useState<number>();
 	const [loading, setLoading] = useState<boolean>(true);
 
-	const initStates = (data: StoryType) => {
+	const initStates = useCallback((data: StoryType) => {
 		dateInit = new Date(data.time * 1000);
 		setDate(
 			`${dateInit.getDate()} ${dateInit.toLocaleString("default", {
@@ -36,7 +35,7 @@ const About = (props: PropsWithChildren<RouteComponentProps<{ id: string }>>) =>
 		);
 		setComments(data.kids);
 		setTotalComments(data.descendants);
-	};
+	}, []);
 
 	useEffect(() => {
 		data && initStates(data);
@@ -50,11 +49,11 @@ const About = (props: PropsWithChildren<RouteComponentProps<{ id: string }>>) =>
 
 			return;
 		}
-	}, []);
+	}, [data, id, initStates]);
 
 	const refreshComments = () => {
 		setLoading(true);
-		getStory(+id).then(story => {
+		getStory(Number(id)).then(story => {
 			setComments(story.kids);
 			setTotalComments(story.descendants);
 			setLoading(false);
@@ -110,7 +109,7 @@ const About = (props: PropsWithChildren<RouteComponentProps<{ id: string }>>) =>
 					{comments && comments.length ? (
 						<TreeView
 							aria-label="comments"
-							sx={{ height: 240, flexGrow: 1, maxWidth: 400 }}
+							sx={{ height: 240, flexGrow: 1 }}
 							defaultExpandIcon={<ExpandMore />}
 							defaultCollapseIcon={<ExpandLess />}
 						>
