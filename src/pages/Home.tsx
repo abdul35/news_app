@@ -56,7 +56,7 @@ const Home = () => {
 				</LoadingButton>
 			</div>
 
-			<main>
+			<main className="main">
 				{stories && stories.length
 					? stories.map((story: StoryType) => <NewsItem key={story.id} story={story} />)
 					: null}

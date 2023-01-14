@@ -9,9 +9,9 @@ a {
 }
 
 .title {
+	margin-top: 0;
 	margin-bottom: 0;
 	font-size: 1.5rem;
-	text-align: start;
 	padding: 1rem 0;
 	color: #66ff66;
 	display: inline-block;
@@ -20,4 +20,24 @@ a {
 .title-wrap {
 	display: flex;
 	justify-content: start;
+}
+
+/* Desktop breakpoint */
+@media screen and (min-width: 1024px) {
+}
+
+/* Tablet breakpont */
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+}
+
+/* Mobile breakpoint */
+@media screen and (max-width: 767px) {
+	.title-wrap {
+		justify-content: center;
+	}
+
+	.title {
+		font-size: 1.2rem;
+		padding: 0.7rem 0;
+	}
 }

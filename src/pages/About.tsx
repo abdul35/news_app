@@ -112,6 +112,7 @@ const About = (props: PropsWithChildren<RouteComponentProps<{ id: string }>>) =>
 							sx={{ height: 240, flexGrow: 1 }}
 							defaultExpandIcon={<ExpandMore />}
 							defaultCollapseIcon={<ExpandLess />}
+							className="tree-view"
 						>
 							{comments.map((commentId: number) => {
 								return <TreeComments commentId={commentId} key={commentId} />;

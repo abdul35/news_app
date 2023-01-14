@@ -1,6 +1,8 @@
 .about {
-	width: 600px;
+	max-width: 600px;
 	margin: auto;
+	margin-bottom: 5rem;
+	max-height: 100%;
 }
 
 .date-wrap {
@@ -19,7 +21,7 @@
 .news-title {
 	margin-top: 4rem;
 	display: inline-block;
-	font-size: 34px;
+	font-size: 2.1rem;
 	word-wrap: break-word;
 	color: black;
 }
@@ -39,4 +41,40 @@
 .comments-container-header__count {
 	font-size: 1.1rem;
 	color: rgba(0, 0, 0, 0.5);
+}
+
+.tree-view {
+	height: 100% !important;
+}
+
+.tree-item {
+	box-shadow: 0 2px 5px -7px black;
+}
+
+/* Desktop breakpoint */
+@media screen and (min-width: 1024px) {
+}
+
+/* Tablet breakpont */
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+	.news-title {
+		margin-top: 2rem;
+		font-size: 1.9rem;
+	}
+}
+
+/* Mobile breakpoint */
+@media screen and (max-width: 767px) {
+	.news-title {
+		margin-top: 1rem;
+		font-size: 1.5rem;
+	}
+	.date-wrap {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.date-wrap span:first-child {
+		margin-bottom: 0.5rem;
+	}
 }
